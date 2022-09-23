@@ -8,6 +8,7 @@ node {
         withMaven(maven: 'mvn') {
             sh 'mvn test'
         }
+    }
     stage('Manual Approval') {
             input message: 'Lanjutkan ke tahap Deploy?? (Klik "Proceed" untuk melanjutkan eksekusi pipeline ke tahap Deploy)'
     }
