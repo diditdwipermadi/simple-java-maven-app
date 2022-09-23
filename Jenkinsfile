@@ -21,9 +21,16 @@ pipeline {
                 }
             }
         }
+        stage('Manual Approval') {
+            steps {
+                input message: 'Lanjutkan ke tahap Deploy?? (Klik "Proceed" untuk melanjutkan eksekusi pipeline ke tahap Deploy)'
+            }
+        }
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
+                echo 'Waiting 1 minutes for deployment to complete prior starting smoke testing'
+                sleep 30     // seconds
             }
         }
     }
