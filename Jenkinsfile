@@ -1,18 +1,30 @@
-node {
-    stage('Build') {
-        withMaven(maven: 'mvn') {
-            sh 'mvn -B -DskipTests clean package'
+pipeline {
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
         }
     }
-    stage('Test') {
-        withMaven(maven: 'mvn') {
-            sh 'mvn test'
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
         }
-            junit 'target/surefire-reports/*.xml'
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh './jenkins/scripts/deliver.sh'
+            }
+        }
     }
-    stage('Deploy') {            
-            sh './jenkins/scripts/deliver.sh'
-            input message: 'Sudah selesai menggunakan Java App? (Klik "Proceed" untuk mengakhiri)'
-            sh './jenkins/scripts/kill.sh'
-        }
 }
