@@ -15,8 +15,9 @@ node {
     }
     stage('Deploy') {
         withMaven(maven: 'mvn') {
-            sh './jenkins/scripts/deliver.sh'
+            sh 'mvn jar:jar install:install help:evaluate -Dexpression=project.name'
         }
+            java -jar target/my-app-1.0-SNAPSHOT.jar
             echo 'Waiting 1 minutes for deployment to complete'
             sleep 60     // seconds
     }
