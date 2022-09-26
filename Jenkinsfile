@@ -1,8 +1,4 @@
-node {
-    
-    env.AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-    env.AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-      
+node {      
     stage('Build') {
         withMaven(maven: 'mvn') {
             sh 'mvn -B -DskipTests clean package'
@@ -22,8 +18,9 @@ node {
             sh 'mvn jar:jar install:install help:evaluate -Dexpression=project.name'
         }
             //sh 'java -jar target/my-app-1.0-SNAPSHOT.jar'
-            sh 'aws configure set region ap-southeast-1'
+        withAWS(credentials: 'aws-credentials', region: 'ap-southeast-1') {
             sh 'aws s3 cp ./target/my-app-1.0-SNAPSHOT.jar s3://my-jars-1105/my-app-1.0.jar'
+        }
             echo 'Waiting 1 minutes for deployment to complete'
             sleep 60
     }
