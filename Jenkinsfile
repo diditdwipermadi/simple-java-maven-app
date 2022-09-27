@@ -20,7 +20,6 @@ node {
         
         sshagent (credentials: ['ssh-ec2-user']) {
           sh "scp -v -o StrictHostKeyChecking=no target/my-app-1.0-SNAPSHOT.jar ec2-user@ec2-52-77-222-40.ap-southeast-1.compute.amazonaws.com:/var/www/html/dicoding"
-          sh "java -version"
         }
             echo 'Waiting 1 minutes for deployment to complete'
             sleep 60
