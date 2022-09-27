@@ -17,9 +17,9 @@ node {
         withMaven(maven: 'mvn') {
             sh 'mvn jar:jar install:install help:evaluate -Dexpression=project.name'
         }
-            //sh 'java -jar target/my-app-1.0-SNAPSHOT.jar'
-        withAWS(credentials: 'aws-credentials', region: 'ap-southeast-1') {
-            sh 'aws s3 cp ./target/my-app-1.0-SNAPSHOT.jar s3://my-jars-1105/my-app-1.0.jar'
+        
+        sshagent (credentials: ['ssh-ec2-user']) {
+          sh "scp target/my-app-1.0-SNAPSHOT.jar ec2-user@instance-public-dns-name:/var/www/html/dicoding"
         }
             echo 'Waiting 1 minutes for deployment to complete'
             sleep 60
